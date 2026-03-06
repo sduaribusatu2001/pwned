@@ -1,0 +1,29 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: mysql-attempt
+  namespace: backbase
+spec:
+  containers:
+  - name: mysql-client
+    image: alpine:latest
+    command: ["/bin/sh"]
+    args:
+      - -c
+      - |
+        apk add --update mariadb-client
+        mysql -h 10.236.200.6 -u bm-atlas-backbase-prd --ssl-ca=/etc/database-certs/ca.crt --ssl-cert=/etc/database-certs/client.crt --ssl-key=/etc/database-certs/client.key -e "SHOW DATABASES;"
+        sleep 3600
+    volumeMounts:
+    - name: database-certs
+      mountPath: /etc/database-certs
+    - name: db-certificate-store
+      mountPath: /etc/db-certificate-store
+  volumes:
+  - name: database-certs
+    secret:
+      secretName: database-certs
+  - name: db-certificate-store
+    secret:
+      secretName: db-certificate-store
+  restartPolicy: Never
