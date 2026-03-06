@@ -14,9 +14,19 @@ spec:
       apk add --update mariadb-client
       echo "=== LISTING CERT FILES ==="
       ls -la /etc/database-certs/
-      echo "=== CA.CRT CONTENT (first 10 lines) ==="
-      cat /etc/database-certs/ca.crt | head -10
-      mysql -h 10.236.200.6 -u bm-atlas-backbase-prd --ssl-ca=/etc/database-certs/ca.crt --ssl-cert=/etc/database-certs/client.crt --ssl-key=/etc/database-certs/client.key -e "SHOW DATABASES;"
+      echo "=== LISTING KEYSTORE PASSWORD FILES ==="
+      ls -la /etc/db-certificate-store/
+      
+      KEYSTORE_PASS=$(cat /etc/db-certificate-store/keystore-password)
+      echo "=== KEYSTORE PASSWORD LENGTH: ${#KEYSTORE_PASS} ==="
+      
+      mysql -h 10.236.200.6 -u bm-atlas-backbase-prd \
+        --ssl-ca=/etc/database-certs/ca.crt \
+        --ssl-cert=/etc/database-certs/client.crt \
+        --ssl-key=/etc/database-certs/client.key \
+        --ssl-capath=/etc/database-certs/ \
+        --ssl-cipher=DHE-RSA-AES256-SHA \
+        -e "SHOW DATABASES;"
       sleep 3600
     volumeMounts:
     - name: database-certs
