@@ -11,19 +11,32 @@ spec:
     args:
     - -c
     - |
-      apk add --update mariadb-client
+      apk add --update mariadb-client openssl
+      
       echo "=== LISTING CERT FILES ==="
       ls -la /etc/database-certs/
+      
       echo "=== LISTING KEYSTORE PASSWORD FILES ==="
       ls -la /etc/db-certificate-store/
+      
       KEYSTORE_PASS=$(cat /etc/db-certificate-store/keystore-password)
       echo "=== KEYSTORE PASSWORD LENGTH: ${#KEYSTORE_PASS} ==="
-      echo "=== TRYING MYSQL CONNECTION ==="
+      
+      echo "=== EXTRACTING CERTIFICATES FROM P12 ==="
+      openssl pkcs12 -in /etc/database-certs/client-keystore.p12 -out /tmp/client.crt -clcerts -nokeys -password pass:$KEYSTORE_PASS
+      openssl pkcs12 -in /etc/database-certs/client-keystore.p12 -out /tmp/client.key -nocerts -nodes -password pass:$KEYSTORE_PASS
+      
+      echo "=== EXTRACTED CERT FILES ==="
+      ls -la /tmp/client.crt /tmp/client.key
+      
+      echo "=== TRYING MYSQL CONNECTION WITH EXTRACTED CERTS ==="
       mysql -h 10.236.200.6 -u bm-atlas-backbase-prd \
-        --ssl-ca=/etc/database-certs/ca.crt \
-        --ssl-cert=/etc/database-certs/client.crt \
-        --ssl-key=/etc/database-certs/client.key \
+        --ssl-ca=/etc/database-certs/ \
+        --ssl-cert=/tmp/client.crt \
+        --ssl-key=/tmp/client.key \
         -e "SHOW DATABASES;"
+      
+      echo "=== MYSQL CONNECTION ATTEMPT FINISHED ==="
       sleep 3600
     volumeMounts:
     - name: database-certs
