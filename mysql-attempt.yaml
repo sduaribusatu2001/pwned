@@ -9,15 +9,15 @@ spec:
     image: alpine:latest
     command: ["/bin/sh"]
     args:
-  - -c
-  - |
-    apk add --update mariadb-client
-    echo "=== LISTING CERT FILES ==="
-    ls -la /etc/database-certs/
-    echo "=== CA.CRT CONTENT (first 10 lines) ==="
-    cat /etc/database-certs/ca.crt | head -10
-    mysql -h 10.236.200.6 -u bm-atlas-backbase-prd --ssl-ca=/etc/database-certs/ca.crt --ssl-cert=/etc/database-certs/client.crt --ssl-key=/etc/database-certs/client.key -e "SHOW DATABASES;"
-    sleep 3600
+    - -c
+    - |
+      apk add --update mariadb-client
+      echo "=== LISTING CERT FILES ==="
+      ls -la /etc/database-certs/
+      echo "=== CA.CRT CONTENT (first 10 lines) ==="
+      cat /etc/database-certs/ca.crt | head -10
+      mysql -h 10.236.200.6 -u bm-atlas-backbase-prd --ssl-ca=/etc/database-certs/ca.crt --ssl-cert=/etc/database-certs/client.crt --ssl-key=/etc/database-certs/client.key -e "SHOW DATABASES;"
+      sleep 3600
     volumeMounts:
     - name: database-certs
       mountPath: /etc/database-certs
