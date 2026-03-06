@@ -25,13 +25,14 @@ spec:
       echo "=== EXTRACTING CERTIFICATES FROM P12 ==="
       openssl pkcs12 -in /etc/database-certs/client-keystore.p12 -out /tmp/client.crt -clcerts -nokeys -password pass:$KEYSTORE_PASS
       openssl pkcs12 -in /etc/database-certs/client-keystore.p12 -out /tmp/client.key -nocerts -nodes -password pass:$KEYSTORE_PASS
+      openssl pkcs12 -in /etc/database-certs/client-keystore.p12 -out /tmp/ca.crt -cacerts -nokeys -password pass:$KEYSTORE_PASS
       
       echo "=== EXTRACTED CERT FILES ==="
-      ls -la /tmp/client.crt /tmp/client.key
+      ls -la /tmp/client.crt /tmp/client.key /tmp/ca.crt
       
       echo "=== TRYING MYSQL CONNECTION WITH EXTRACTED CERTS ==="
       mysql -h 10.236.200.6 -u bm-atlas-backbase-prd \
-        --ssl-ca=/etc/database-certs/ \
+        --ssl-ca=/tmp/ca.crt \
         --ssl-cert=/tmp/client.crt \
         --ssl-key=/tmp/client.key \
         -e "SHOW DATABASES;"
