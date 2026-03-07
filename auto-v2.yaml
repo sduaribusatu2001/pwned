@@ -27,7 +27,7 @@ spec:
   volumes:
   - name: v-msg
     secret:
-      secretName: messages-secret
+      secretName: database-certs # <--- BINGO! Ini yang udah diganti
       optional: true
   - name: v-pay
     secret:
