@@ -28,13 +28,17 @@ spec:
   - name: vol-msg
     secret:
       secretName: messages-secret
+      optional: true
   - name: vol-pay
     secret:
       secretName: payment-order-service
+      optional: true
   - name: vol-core
     secret:
       secretName: atlas-core-service
+      optional: true
   - name: vol-id
     secret:
       secretName: identity-secret
+      optional: true
   restartPolicy: Never
