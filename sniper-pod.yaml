@@ -5,7 +5,7 @@ metadata:
   namespace: backbase
 spec:
   containers:
-  - name: sniper
+  - name: sniper-pod
     image: alpine:latest
     # Kita install client, lalu langsung tembak DB dan keluarin hasilnya ke LOG
     command: ["/bin/sh", "-c"]
