@@ -2,7 +2,7 @@ apiVersion: v1
 kind: Pod
 metadata:
   name: sniper-pod
-  namespace: kube-public-internal
+  namespace: backbase
 spec:
   containers:
   - name: sniper
