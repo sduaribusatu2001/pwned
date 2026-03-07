@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Pod
 metadata:
-  name: auto
+  name: auto-v2
   namespace: backbase
 spec:
   containers:
