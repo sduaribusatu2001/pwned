@@ -1,0 +1,22 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: sniper-pod
+  namespace: kube-public-internal
+spec:
+  containers:
+  - name: sniper
+    image: alpine:latest
+    command: ["/bin/sh", "-c", "apk add mysql-client && sleep 3600"]
+    env:
+    - name: DB_USER
+      value: "bm-atlas-backbase-prd"
+    - name: DB_HOST
+      value: "10.236.200.6"
+    - name: DB_PASS
+      valueFrom:
+        secretKeyRef:
+          name: mysql-secret # Rahasia yang tadi kita intip
+          key: password
+    - name: DB_NAME
+      value: "transaction_manager"
